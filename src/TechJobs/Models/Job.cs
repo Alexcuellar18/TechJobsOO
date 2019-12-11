@@ -1,4 +1,6 @@
-﻿namespace TechJobs.Models
+﻿using System.Collections.Generic;
+
+namespace TechJobs.Models
 {
     public class Job
     {
@@ -10,6 +12,7 @@
         public Location Location { get; set; }
         public CoreCompetency CoreCompetency { get; set; }
         public PositionType PositionType { get; set; }
+        public static List<Job> Find { get; internal set; }
 
         public Job()
         {

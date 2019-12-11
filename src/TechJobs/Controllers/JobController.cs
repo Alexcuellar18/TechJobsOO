@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 using TechJobs.Data;
+using TechJobs.Models;
 using TechJobs.ViewModels;
 
 namespace TechJobs.Controllers
@@ -18,9 +21,11 @@ namespace TechJobs.Controllers
         // The detail display for a given Job at URLs like /Job?id=17
         public IActionResult Index(int id)
         {
-            // TODO #1 - get the Job with the given ID and pass it into the view
+            var getJob = jobData.Find(id);
+            
 
-            return View();
+
+            return View(getJob);
         }
 
         public IActionResult New()
@@ -32,9 +37,48 @@ namespace TechJobs.Controllers
         [HttpPost]
         public IActionResult New(NewJobViewModel newJobViewModel)
         {
-            // TODO #6 - Validate the ViewModel and if valid, create a 
-            // new Job and add it to the JobData data store. Then
-            // redirect to the Job detail (Index) action/view for the new Job.
+            
+
+            if (ModelState.IsValid)
+            {
+                Job newJob = new Job
+                {
+                    
+                    Name = newJobViewModel.Name,
+                    Employer = jobData.Employers.Find(newJobViewModel.EmployerID)
+                    /*Employer = new Employer {
+                        ID = newJobViewModel.EmployerID,
+                        Value = newJobViewModel.Employers.Where(e => e.Value == newJobViewModel.EmployerID.ToString())
+                        .Select(e => e.Text).FirstOrDefault()
+                    }
+                    */,
+                    Location = new Location 
+                    {
+                        ID = newJobViewModel.JobLocation,
+                        Value = newJobViewModel.Locations.Where(l => l.Value == newJobViewModel.JobLocation.ToString())
+                        .Select(l => l.Text).FirstOrDefault()
+                    },
+                    CoreCompetency = new CoreCompetency
+                    { 
+                        ID = newJobViewModel.JobCoreCompetency,
+                        Value = newJobViewModel.CoreCompetencies.Where(c => c.Value == newJobViewModel.JobCoreCompetency.ToString())
+                        .Select(c => c.Text).FirstOrDefault()
+                    },
+                    PositionType = new PositionType
+                    {
+                        ID = newJobViewModel.JobPositionType,
+                        Value = newJobViewModel.PositionTypes.Where(p => p.Value == newJobViewModel.JobPositionType.ToString())
+                        .Select(p => p.Text).FirstOrDefault()
+                    }
+
+
+
+
+                };
+                jobData.Jobs.Add(newJob);
+                var currentId = newJob.ID;
+                return Redirect($"/Job?id={currentId}");
+            }
 
             return View(newJobViewModel);
         }

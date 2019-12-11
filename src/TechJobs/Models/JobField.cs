@@ -1,4 +1,7 @@
-﻿namespace TechJobs.Models
+﻿using System;
+using TechJobs.Data;
+
+namespace TechJobs.Models
 {
     public class JobField
     {
@@ -21,6 +24,10 @@
         // Provide a basic case-insensitive search
         public bool Contains(string testValue)
         {
+            if (string.IsNullOrWhiteSpace(testValue))
+            {
+                return true;
+            }
             return Value.ToLower().Contains(testValue.ToLower());
         }
 
